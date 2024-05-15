@@ -1,0 +1,39 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+html {
+    /* Avoid different widths on longer pages */
+    overflow-y: scroll;
+}
+body, button {
+    /* Increase default font size */
+    font-size: 16pt;
+}
+.body-content-wrapper {
+    margin-left: auto;
+    margin-right: auto;
+    width: 80%;
+}
+
+#js-top-nav {
+    margin: auto;
+    width: max-content;
+    margin-top: 10px;
+    margin-bottom: 30px;
+}
+#js-top-nav > div {
+    margin-top: 20px;
+    display: inline-block;
+}
+#js-top-nav a {
+    border: 3px solid red;
+    border-radius: 15%;
+    padding: 10px;
+}
+
+h1 {
+    /* Center headings */
+    text-align: center;
+    margin: 20px;
+}

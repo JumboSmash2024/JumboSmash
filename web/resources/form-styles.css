@@ -1,0 +1,62 @@
+h1 {
+    margin-top: 0px;
+}
+
+.center-table,
+.center-table * {
+    box-sizing: border-box;
+}
+.center-table {
+    background-color: #94dcebbf;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    width: 350px;
+    border: 3px solid transparent;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 50px;
+    outline: none;
+}
+
+.js-form-button {
+    position: relative;
+    width: 100%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: #8995d6;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: bold;
+    overflow: hidden;
+    color: #000;
+    transition: color 0.3s;
+}
+#js-login-signup {
+    display: block;
+    text-decoration: none;
+}
+.js-form-redirect {
+    position: relative;
+    width: 50%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: #8995d6;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: bold;
+    overflow: hidden;
+    color: #000;
+    transition: color 0.3s;
+}

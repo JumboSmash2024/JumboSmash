@@ -1,0 +1,16 @@
+.js-response-form-row {
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.js-response-form-row label {
+    padding-right: 5px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-right: 1px solid black;
+}
+
+#js-responses-submit {
+    margin-top: 20px;
+}
