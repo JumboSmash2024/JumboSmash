@@ -14,7 +14,7 @@ class Logger extends AbstractLogger {
         array $context = []
     ): void {
         $replace = [];
-        foreach ( $context as $k => $v ) {
+        foreach ( $context as $key => $val ) {
             $replace['{' . $key . '}'] = $this->stringify( $val );
         }
         $msg = strtr( $msg, $replace );

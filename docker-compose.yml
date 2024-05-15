@@ -18,7 +18,5 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./web/:/var/www/html/:cached
-    environment:
-      JUMBO_SMASH_DOCKER: "true"
     ports:
       - "80:80"

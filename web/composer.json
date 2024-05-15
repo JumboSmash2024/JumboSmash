@@ -1,5 +1,6 @@
 {
     "require": {
-        "symfony/mailer": "7.0.7"
+        "symfony/mailer": "7.0.7",
+        "symfony/amazon-mailer": "7.0.7"
     }
 }

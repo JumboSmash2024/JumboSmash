@@ -47,22 +47,11 @@ unset( $includeFiles );
 
 /**
  * DATABASE SETUP
- *
- * To allow both local development with docker and working on siteground, with
- * needing to change the code in Database.php, define global constants for
- * mysqli host, user, and password.
  */
-if ( getenv( 'JUMBO_SMASH_DOCKER' ) !== false ) {
-    define( 'JUMBO_SMASH_DB_HOST', 'db' );
-    define( 'JUMBO_SMASH_DB_USER', 'root' );
-    define( 'JUMBO_SMASH_DB_PASS', 'root' );
-    define( 'JUMBO_SMASH_DB_NAME', 'jumbo_smash_db' );
-} else {
-    define( 'JUMBO_SMASH_DB_HOST', 'localhost' );
-    define( 'JUMBO_SMASH_DB_USER', 'unignpuowzpvd' );
-    define( 'JUMBO_SMASH_DB_PASS', 'cxs07gnnpm3t' );
-    define( 'JUMBO_SMASH_DB_NAME', 'dbpxwdnfwmi2n3' );
-}
+define( 'JUMBO_SMASH_DB_HOST', 'db' );
+define( 'JUMBO_SMASH_DB_USER', 'root' );
+define( 'JUMBO_SMASH_DB_PASS', 'root' );
+define( 'JUMBO_SMASH_DB_NAME', 'jumbo_smash_db' );
 
 // Individual classes have extra setup
 $extraSetup = [
