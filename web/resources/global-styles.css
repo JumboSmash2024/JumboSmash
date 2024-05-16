@@ -9,7 +9,7 @@ html {
 body {
     padding-bottom: 50px;
 }
-body, button {
+body, button, textarea {
     /* Increase default font size */
     font-size: 16pt;
 }

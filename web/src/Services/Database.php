@@ -6,6 +6,7 @@
 
 namespace JumboSmash\Services;
 
+use JumboSmash\MissingUserException;
 use stdClass;
 use mysqli;
 
@@ -44,11 +45,13 @@ class Database {
     public function ensureDatabase() {
         $this->ensureTable( 'users', 'users-table.sql' );
         $this->ensureTable( 'responses', 'responses-table.sql' );
+        $this->ensureTable( 'profiles', 'profiles-table.sql' );
     }
 
     public function clearTables() {
         $this->db->query( 'DROP TABLE users' );
         $this->db->query( 'DROP TABLE responses' );
+        $this->db->query( 'DROP TABLE profiles' );
         // On the next page view ensureDatabase() will recreate the tables
     }
 
@@ -114,6 +117,10 @@ class Database {
         $query->execute();
         $result = $query->get_result();
         $rows = $result->fetch_all( MYSQLI_ASSOC );
+        if ( count( $rows ) === 0 ) {
+            // We should only fetch by ID for valid users
+            throw new MissingUserException( "Missing user with ID: $userId" );
+        }
         return (object)($rows[0]);
     }
 
@@ -266,6 +273,56 @@ class Database {
         $setter->bind_param( 'sd', ...[ $correctHash, $userId ] );
         $setter->execute();
         return true;
+    }
+
+    private function getProfileTextRaw( int $userId ): ?string {
+        // Doesn't care about unverified/disabled accounts
+        $query = $this->db->prepare(
+            'SELECT profile_text FROM profiles WHERE profile_user = ?'
+        );
+        $query->bind_param( 'd', ...[ $userId ] );
+        $query->execute();
+        $result = $query->get_result();
+        $rows = $result->fetch_all( MYSQLI_ASSOC );
+        if ( count( $rows ) === 0 ) {
+            return null;
+        }
+        return $rows[0]['profile_text'];   
+    }
+
+    public function getProfileText( int $userId ): ?string {
+        $userStatus = $this->getAccountStatus( $userId );
+        // Text is ignored for disabled/unverified accounts
+        if ( Management::hasFlag( $userStatus, Management::FLAG_DISABLED ) ) {
+            return null;
+        }
+        if ( !Management::hasFlag( $userStatus, Management::FLAG_VERIFIED ) ) {
+            return null;
+        }
+        return $this->getProfileTextRaw( $userId );
+    }
+
+    public function setProfileText( int $userId, string $profile ): void {
+        if ( $this->getProfileTextRaw( $userId ) === null ) {
+            // No current profile
+            $query = $this->db->prepare(
+                'INSERT INTO profiles (profile_user, profile_text) VALUES (?, ?)'
+            );
+            $query->bind_param(
+                'ds',
+                ...[ $userId, $profile ]
+            );
+        } else {
+            // Have current text
+            $query = $this->db->prepare(
+                'UPDATE profiles SET profile_text = ? WHERE profile_user = ?'
+            );
+            $query->bind_param(
+                'sd',
+                ...[ $profile, $userId ]
+            );
+        }
+        $query->execute();  
     }
 
 }

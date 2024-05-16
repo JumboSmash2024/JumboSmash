@@ -130,10 +130,17 @@ class ManagementPage extends BasePage {
         $userId = (int)( $dbRow->user_id );
         $userStatus = (int)( $dbRow->user_status );
 
-        $cells = array_map(
-            static fn ( $val ) => HTMLBuilder::element( 'td', (string)$val ),
-            array_values( (array)$dbRow )
+        $cells = [];
+        $cells[] = HTMLBuilder::element( 'td', (string)$userId );
+        $cells[] = HTMLBuilder::element(
+            'td',
+            HTMLBuilder::link(
+                '/profile.php?user-id=' . $userId,
+                $dbRow->user_tufts_name
+            )
         );
+        $cells[] = HTMLBuilder::element( 'td', $dbRow->user_personal_email );
+        $cells[] = HTMLBuilder::element( 'td', (string)$userStatus );
 
         $verified = Management::hasFlag( $userStatus, Management::FLAG_VERIFIED );
         $disabled = Management::hasFlag( $userStatus, Management::FLAG_DISABLED );
@@ -190,7 +197,7 @@ class ManagementPage extends BasePage {
         );
 
         $columns = [
-            'ID', 'Name', 'Personal', 'Status',
+            'ID', 'Name (profile link)', 'Personal', 'Status',
             'Verify', 'Unverify', 'Enable', 'Disable'
         ];
         $columnHeaders = array_map(

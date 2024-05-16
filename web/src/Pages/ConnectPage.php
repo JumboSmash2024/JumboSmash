@@ -128,9 +128,13 @@ class ConnectPage extends BasePage {
             $options
         );
         $fields = array_merge( ...$optRadios );
+        $jumboDisplayLink = HTMLBuilder::link(
+            '/profile.php?user-id=' . $userId,
+            $jumboDisplay
+        );
         $fields[] = HTMLBuilder::element(
             'span',
-            'How do you feel about: ' . $jumboDisplay . '?'
+            [ 'How do you feel about: ', $jumboDisplayLink, '?' ]
         );
         return HTMLBuilder::element(
             'div',

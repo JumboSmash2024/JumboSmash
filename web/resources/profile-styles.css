@@ -1,0 +1,13 @@
+textarea {
+    resize: vertical;
+    min-height: 200px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 15px;
+}
+
+.js-profile-text {
+    border: 1px solid black;
+}

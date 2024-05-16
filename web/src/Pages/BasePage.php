@@ -157,6 +157,15 @@ abstract class BasePage {
             ),
             [ 'id' => 'js-nav-matches-wrapper' ]
         );
+        $elems['profile'] = HTMLBuilder::element(
+            'div',
+            HTMLBuilder::link(
+                './profile.php',
+                'My profile',
+                [ 'id' => 'js-nav-profile' ]
+            ),
+            [ 'id' => 'js-nav-profile-wrapper' ]
+        );
         $elems['logout'] = HTMLBuilder::element(
             'div',
             HTMLBuilder::link(
