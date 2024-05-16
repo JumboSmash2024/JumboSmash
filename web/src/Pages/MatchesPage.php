@@ -66,7 +66,18 @@ class MatchesPage extends BasePage {
                 );
             }
         }
+
+        $reminder = HTMLBuilder::element(
+            'div',
+            [
+                HTMLBuilder::element( 'strong', 'Reminder:' ),
+                'Matching just means you both want to connect. It does not imply consent to anything. NO MEANS NO!'
+            ],
+            [ 'id' => 'js-matches-reminder' ]
+        );
+
         $output = [];
+        $output[] = $reminder;
         if ( $yesMatch ) {
             $output[] = HTMLBuilder::element( 'p', 'Your matches:' );
             $output[] = HTMLBuilder::element( 'ul', $yesMatch );

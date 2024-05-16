@@ -92,8 +92,18 @@ abstract class BasePage {
     abstract protected function getBodyElements(): array;
 
     protected function getTopNavElements(): array {
+        $helpPageLink = HTMLBuilder::element(
+            'div',
+            HTMLBuilder::link(
+                './help.php',
+                'Help',
+                [ 'id' => 'js-nav-help' ]
+            ),
+            [ 'id' => 'js-nav-help-wrapper' ]
+        );
         if ( !AuthManager::isLoggedIn() ) {
             return [
+                $helpPageLink,
                 HTMLBuilder::element(
                     'div',
                     HTMLBuilder::link(
@@ -106,6 +116,7 @@ abstract class BasePage {
             ];
         }
         $elems = [];
+        $elems['help'] = $helpPageLink;
         $elems['respond'] = HTMLBuilder::element(
             'div',
             HTMLBuilder::link(

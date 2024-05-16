@@ -1,3 +1,7 @@
 p {
     margin-top: 30px;
 }
+
+#js-matches-reminder {
+    font-size: 50px;
+}
