@@ -140,7 +140,7 @@ class ProfilePage extends BasePage {
             if ( $isMyProfile ) {
                 $elems[] = HTMLBuilder::element(
                     'p',
-                    'Please create one (and consider adding a URL with images'
+                    'Please create one (and consider adding a URL with images)'
                 );
             }
         } else {
