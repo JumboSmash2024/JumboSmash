@@ -110,6 +110,15 @@ abstract class BasePage {
                     ),
                     [ 'id' => 'js-nav-login-wrapper' ]
                 ),
+                HTMLBuilder::element(
+                    'div',
+                    HTMLBuilder::link(
+                        './signup.php',
+                        'Sign up',
+                        [ 'id' => 'js-nav-signup' ]
+                    ),
+                    [ 'id' => 'js-nav-signup-wrapper' ]
+                ),
             ];
         }
         $elems = [];

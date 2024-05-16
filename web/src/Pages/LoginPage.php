@@ -144,13 +144,6 @@ class LoginPage extends BasePage {
             'Login',
             [ 'type' => 'submit', 'id' => 'js-login-submit', 'class' => 'js-form-button' ]
         );
-        $fields[] = clone $br;
-        $fields[] = clone $br;
-        $fields[] = HTMLBuilder::link(
-            './signup.php',
-            'Create account',
-            [ 'id' => 'js-login-signup', 'class' => 'js-form-button' ]
-        );
         $fieldArrs = array_map(
             fn ( $v ) => is_array( $v ) ? $v : [ $v ],
             $fields
