@@ -13,6 +13,9 @@ body, button, textarea {
     /* Increase default font size */
     font-size: 16pt;
 }
+pre {
+    white-space: pre-line;
+}
 .body-content-wrapper {
     margin-left: auto;
     margin-right: auto;
