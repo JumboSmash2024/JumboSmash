@@ -79,8 +79,13 @@ class ManagementPage extends BasePage {
             'Performing action `{action}` for user #{id}; result={res}',
             [ 'action' => $action, 'id' => $userId, 'res' => $result ]
         );
+        $accountDetails = $this->db->getAccountById( $userId );
         return [
             HTMLBuilder::element( 'p', $result ),
+            HTMLBuilder::element(
+                'p',
+                'For tufts=' . $accountDetails->user_tufts_name . ' ; personal=' . $accountDetails->user_personal_email
+            ),
             HTMLBuilder::element( 'br' ),
             $this->getManagerTable(),
         ];
