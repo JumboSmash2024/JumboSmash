@@ -2,9 +2,10 @@
 
 namespace JumboSmash\Pages;
 
-use JumboSmash\HTML\{HTMLBuilder, HTMLElement, HTMLPage};
+use JumboSmash\HTML\{HTMLBuilder, HTMLElement};
 use JumboSmash\Services\AuthManager;
 use JumboSmash\Services\Database;
+use JumboSmash\Services\Logger;
 
 class ResponsePage extends BasePage {
 
@@ -78,7 +79,16 @@ class ResponsePage extends BasePage {
             ];
         }
         $user = AuthManager::getLoggedInUserId();
+        $logger = new Logger();
         foreach ( $newResponses as [ $jumboId, $dbValue ] ) {
+            $logger->info(
+                'Recording response by user #{user} about user #{target}: {value}',
+                [
+                    'user' => $user,
+                    'target' => $jumboId,
+                    'value' => ( $dbValue === Database::VALUE_RESPONSE_SMASH ? 'smash' : 'pass' ),
+                ]
+            );
             $db->recordResponse(
                 $user,
                 $jumboId,
@@ -86,7 +96,6 @@ class ResponsePage extends BasePage {
             );
         }
         return [
-            // HTMLBuilder::element( 'p', var_export( $_POST, true ) ),
             HTMLBuilder::element(
                 'div',
                 [

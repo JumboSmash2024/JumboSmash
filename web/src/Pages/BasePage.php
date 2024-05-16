@@ -1,17 +1,14 @@
 <?php
 
-/**
- * Used to create the output page
- */
-
 namespace JumboSmash\Pages;
 
-use JumboSmash\HTML\{HTMLBuilder, HTMLElement, HTMLPage};
+use JumboSmash\HTML\{HTMLBuilder, HTMLPage};
 use JumboSmash\Services\AuthManager;
 use JumboSmash\Services\Logger;
 
 abstract class BasePage {
-    protected HTMLPage $page;
+
+    private HTMLPage $page;
     private bool $loadedBodyContent = false;
 
     protected function __construct( string $pageTitle ) {

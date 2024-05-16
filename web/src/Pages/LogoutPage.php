@@ -1,15 +1,12 @@
 <?php
 
-/**
- * Used to create the output page
- */
-
 namespace JumboSmash\Pages;
 
 use JumboSmash\HTML\HTMLBuilder;
 use JumboSmash\Services\AuthManager;
 
 class LogoutPage extends BasePage {
+
     public function __construct() {
         parent::__construct( 'Logout' );
         $this->addStyleSheet( 'form-styles.css' );

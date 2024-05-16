@@ -2,12 +2,13 @@
 
 namespace JumboSmash\Pages;
 
-use JumboSmash\HTML\{HTMLBuilder, HTMLElement, HTMLPage};
+use JumboSmash\HTML\{HTMLBuilder, HTMLElement};
 use JumboSmash\Services\AuthManager;
 use JumboSmash\Services\Database;
 use JumboSmash\Services\PasswordManager;
 
 class SignUpPage extends BasePage {
+
     private string $signUpError;
 
     public function __construct() {

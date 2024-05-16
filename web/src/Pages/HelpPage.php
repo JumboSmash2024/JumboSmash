@@ -1,15 +1,11 @@
 <?php
 
-/**
- * Used to create the output page
- */
-
 namespace JumboSmash\Pages;
 
 use JumboSmash\HTML\HTMLBuilder;
-use JumboSmash\Services\AuthManager;
 
 class HelpPage extends BasePage {
+
     public function __construct() {
         parent::__construct( 'Help' );
         $this->addStyleSheet( 'help-styles.css' );
