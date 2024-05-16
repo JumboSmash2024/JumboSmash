@@ -65,17 +65,19 @@ class SignUpPage extends BasePage {
         $passConfirm = $_POST['js-password-confirm'];
         if ( $personalEmail === '' ) {
             return 'Missing personal email';
-        } else if ( !filter_var( $personalEmail, FILTER_VALIDATE_EMAIL ) ) {
+        } elseif ( !filter_var( $personalEmail, FILTER_VALIDATE_EMAIL ) ) {
             return 'Invalid personal email';
-        } else if ( $tuftsEmail === '' ) {
+        } elseif ( str_ends_with( $personalEmail, '@tufts.edu' ) ) {
+            return 'Personal email should not be @tufts.edu';
+        } elseif ( $tuftsEmail === '' ) {
             return 'Missing tufts email';
-        } else if ( !str_ends_with( $tuftsEmail, '@tufts.edu' ) ) {
+        } elseif ( !str_ends_with( $tuftsEmail, '@tufts.edu' ) ) {
             return 'Tufts email must end with `@tufts.edu`';
-        } else if ( !filter_var( $tuftsEmail, FILTER_VALIDATE_EMAIL ) ) {
+        } elseif ( !filter_var( $tuftsEmail, FILTER_VALIDATE_EMAIL ) ) {
             return 'Invalid tufts email';
-        } else if ( $pass === '' || $passConfirm === '' ) {
+        } elseif ( $pass === '' || $passConfirm === '' ) {
             return 'Missing password';
-        } else if ( $pass !== $passConfirm ) {
+        } elseif ( $pass !== $passConfirm ) {
             return 'Passwords do not match';
         }
 
