@@ -13,6 +13,8 @@ class ConnectPage extends BasePage {
     private const RESPONSE_SMASH = 'Smash';
     private const RESPONSE_PASS = 'Pass';
 
+    private const ACCEPTING_RESPONSES = false;
+
     public function __construct() {
         parent::__construct( 'Connect' );
         $this->addStyleSheet( 'connect-styles.css' );
@@ -38,6 +40,10 @@ class ConnectPage extends BasePage {
         }
         $isPost = ( $_SERVER['REQUEST_METHOD'] ?? 'GET' ) === 'POST';
         if ( !$isPost ) {
+            return [ $this->getForm() ];
+        }
+        if ( !self::ACCEPTING_RESPONSES ) {
+            // Someone manually messed with the HTML, sneaky :)
             return [ $this->getForm() ];
         }
         return $this->trySubmit();
@@ -192,6 +198,7 @@ class ConnectPage extends BasePage {
                     'value' => $opt,
                     ...( $opt === $currResponse ? [ 'checked' => true ] : [] ),
                     ...( $opt === self::RESPONSE_SKIP ? $skipOpt : [] ),
+                    ...( self::ACCEPTING_RESPONSES ? [] : [ 'disabled' => true ] ),
                 ],
                 $opt
             ) ),
@@ -282,11 +289,22 @@ class ConnectPage extends BasePage {
             );
         }
         
-        $fields[] = HTMLBuilder::element(
-            'button',
-            'Submit',
-            [ 'type' => 'submit', 'id' => 'js-responses-submit', 'class' => 'js-form-button' ]
-        );
+        if ( self::ACCEPTING_RESPONSES ) {
+            $fields[] = HTMLBuilder::element(
+                'button',
+                'Submit',
+                [ 'type' => 'submit', 'id' => 'js-responses-submit', 'class' => 'js-form-button' ]
+            );
+        } else {
+            array_unshift( $fields, HTMLBuilder::element( 'br' ) );
+            array_unshift(
+                $fields,
+                HTMLBuilder::element(
+                    'p',
+                    'Not accepting responses yet. Follow @jumbosmash on Sidechat for updates.'
+                )
+            );
+        }
         return $fields;
     }
 }
