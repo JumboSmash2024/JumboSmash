@@ -53,7 +53,10 @@ class HistoryPage extends BasePage {
         $responseRows = array_map(
             static fn ( $resp ) => HTMLBuilder::tableRow(
                 [
-                    $resp->user_tufts_name,
+                    HTMLBuilder::link(
+                        '/profile.php?user-id=' . $resp->user_id,
+                        $resp->user_tufts_name
+                    ),
                     $resp->resp_value === Database::VALUE_RESPONSE_SMASH ? 'Smash' : 'Pass'
                 ],
                 [ 'class' => 'js-history-response' ]
@@ -80,35 +83,16 @@ class HistoryPage extends BasePage {
             ],
             [ 'id' => 'js-history-response-table' ]
         );
-        return [ $table ];
-    }
 
-    private function getRowForJumbo( string $jumboDisplay, int $userId ): HTMLElement {
-        // ID is used so that we can be sure to have a unique and valid identifier
-        $options = [ 'Skip', 'Smash', 'Pass' ];
-        $optRadios = array_map(
-            fn ( $opt ) => array_reverse( HTMLBuilder::labeledInput(
-                'radio',
-                [
-                    'id' => "js-sp-for-$userId-$opt",
-                    'name' => 'js-sp-for-' . $userId,
-                    'value' => $opt,
-                    ...( $opt === 'Skip' ? [ 'checked' => true ] : [] ),
-                ],
-                $opt
-            ) ),
-            $options
+        $intro = HTMLBuilder::element(
+            'p',
+            [
+                'Your current responses can be viewed here. To change them, visit ',
+                HTMLBuilder::link( './connect.php', 'connect.php' ),
+                'and update the rows in the bottom section.'
+            ]
         );
-        $fields = array_merge( ...$optRadios );
-        $fields[] = HTMLBuilder::element(
-            'span',
-            'How do you feel about: ' . $jumboDisplay . '?'
-        );
-        return HTMLBuilder::element(
-            'div',
-            $fields,
-            [ 'class' => 'js-response-form-row' ]
-        );
+        return [ $intro, HTMLBuilder::element( 'br' ), $table ];
     }
 
 }

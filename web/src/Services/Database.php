@@ -184,9 +184,25 @@ class Database {
         return (int)(string)( $this->db->insert_id );
     }
 
+    public function updateResponse(
+        int $userId,
+        int $jumboId,
+        int $responseValue
+    ): void {
+        $query = $this->db->prepare(
+            'UPDATE responses SET resp_value = ? ' .
+            'WHERE resp_user = ? AND resp_target = ?'
+        );
+        $query->bind_param(
+            'ddd',
+            ...[ $responseValue, $userId, $jumboId ]
+        );
+        $query->execute();
+    }
+
     public function getResponses( int $userId ): array {
         $query = $this->db->prepare(
-            'SELECT resp_value, user_tufts_name FROM responses ' .
+            'SELECT resp_value, user_tufts_name, user_id FROM responses ' .
             'JOIN users ON resp_target = user_id WHERE resp_user = ?'
         );
         $query->bind_param( 'd', ...[ $userId ] );
