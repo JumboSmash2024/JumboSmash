@@ -32,8 +32,9 @@ class ResponsePage extends BasePage {
     }
 
     private function getMainDisplay(): array {
-        if ( !AuthManager::isLoggedIn() ) {
-            return [ $this->mustLogInError() ];
+        $authError = $this->getAuthError();
+        if ( $authError ) {
+            return [ $authError ];
         }
         $isPost = ( $_SERVER['REQUEST_METHOD'] ?? 'GET' ) === 'POST';
         if ( !$isPost ) {
@@ -108,14 +109,6 @@ class ResponsePage extends BasePage {
                 ]
             ),
         ];
-    }
-
-    private function mustLogInError(): HTMLElement {
-        return HTMLBuilder::element(
-            'div',
-            'ERROR: Must be logged in!',
-            [ 'class' => 'js-error' ]
-        );
     }
 
     private function getRowForJumbo( string $jumboDisplay, int $userId ): HTMLElement {

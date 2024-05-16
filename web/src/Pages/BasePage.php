@@ -2,9 +2,8 @@
 
 namespace JumboSmash\Pages;
 
-use JumboSmash\HTML\{HTMLBuilder, HTMLPage};
+use JumboSmash\HTML\{HTMLBuilder, HTMLPage, HTMLElement};
 use JumboSmash\Services\AuthManager;
-use JumboSmash\Services\Logger;
 
 abstract class BasePage {
 
@@ -12,7 +11,6 @@ abstract class BasePage {
     private bool $loadedBodyContent = false;
 
     protected function __construct( string $pageTitle ) {
-        ( new Logger )->debug( 'Starting new request to: ' . $_SERVER['REQUEST_URI'] );
         $this->page = new HTMLPage();
         $this->page->addHeadElement(
             HTMLBuilder::element( 'title', $pageTitle )
@@ -122,6 +120,15 @@ abstract class BasePage {
             ];
         }
         $elems = [];
+        $elems['manage'] = HTMLBuilder::element(
+            'div',
+            HTMLBuilder::link(
+                './manage.php',
+                'Manage',
+                [ 'id' => 'js-nav-manage' ]
+            ),
+            [ 'id' => 'js-nav-manage-wrapper' ]
+        );
         $elems['help'] = $helpPageLink;
         $elems['respond'] = HTMLBuilder::element(
             'div',
@@ -161,4 +168,23 @@ abstract class BasePage {
         );
         return $elems;
     }
+
+    protected function getAuthError(): ?HTMLElement {
+        if ( !AuthManager::isLoggedIn() ) {
+            return HTMLBuilder::element(
+                'div',
+                'ERROR: Must be logged in!',
+                [ 'class' => 'js-error' ]
+            ); 
+        }
+        if ( !AuthManager::isVerified() ) {
+            return HTMLBuilder::element(
+                'div',
+                'ERROR: Account is not verified! See help page for details.',
+                [ 'class' => 'js-error' ]
+            );
+        }
+        return null;
+    }
+
 }

@@ -5,6 +5,12 @@ CREATE TABLE users (
     user_tufts_name VARCHAR(255) DEFAULT '' NOT NULL,
     user_personal_email VARCHAR(255) DEFAULT '' NOT NULL,
     user_pass_hash VARCHAR(255) DEFAULT '' NOT NULL,
+    -- Account status, bit flag:
+    -- 0 = none
+    -- 1 = verified
+    -- 2 = disabled
+    -- 512 = management/superuser
+    user_status INT UNSIGNED NOT NULL,
 
     PRIMARY KEY(user_id),
     -- Cannot use the same email multiple times

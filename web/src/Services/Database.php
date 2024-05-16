@@ -74,7 +74,7 @@ class Database {
     public function findAccountByTufts( string $tuftsName ): ?stdClass {
         $query = $this->db->prepare(
             'SELECT user_id, user_pass_hash, user_tufts_name, ' .
-            'user_personal_email FROM users WHERE user_tufts_name = ?'
+            'user_personal_email, user_status FROM users WHERE user_tufts_name = ?'
         );
         $query->bind_param(
             's',
@@ -90,7 +90,7 @@ class Database {
     }
     public function findAccountByPersonal( string $personalEmail ): ?stdClass {
         $query = $this->db->prepare(
-            'SELECT user_id, user_pass_hash, user_tufts_name, ' .
+            'SELECT user_id, user_pass_hash, user_tufts_name, user_status ' .
             'user_personal_email FROM users WHERE user_personal_email = ?'
         );
         $query->bind_param(
@@ -105,16 +105,16 @@ class Database {
         }
         return (object)($rows[0]);
     }
-    public function getAccountById( int $userId ): array {
+    public function getAccountById( int $userId ): stdClass {
         $query = $this->db->prepare(
-            'SELECT user_id, user_tufts_name, user_personal_email ' .
+            'SELECT user_id, user_tufts_name, user_personal_email, user_status ' .
             ' FROM users WHERE user_id = ?'
         );
         $query->bind_param( 'd', ...[ $userId ] );
         $query->execute();
         $result = $query->get_result();
         $rows = $result->fetch_all( MYSQLI_ASSOC );
-        return $rows[0];
+        return (object)($rows[0]);
     }
 
     public function createAccount(
@@ -123,12 +123,17 @@ class Database {
         string $passHash
     ): string {
         $query = $this->db->prepare(
-            'INSERT INTO users (user_tufts_name, user_personal_email, user_pass_hash) ' .
-            'VALUES (?, ?, ?)'
+            'INSERT INTO users (user_tufts_name, user_personal_email, user_pass_hash, user_status) ' .
+            'VALUES (?, ?, ?, ?)'
         );
         $query->bind_param(
-            'sss',
-            ...[ strtolower( $tuftsName ), strtolower( $personalEmail ), $passHash ]
+            'sssd',
+            ...[
+                strtolower( $tuftsName ),
+                strtolower( $personalEmail ),
+                $passHash,
+                Management::FLAG_NONE,
+            ]
         );
         $query->execute();
         return (string)( $this->db->insert_id );
@@ -136,10 +141,14 @@ class Database {
 
     public function getUnresponded( int $userId ): array {
         $query = $this->db->prepare(
-            'SELECT user_id, user_tufts_name FROM users WHERE NOT EXISTS ' .
+            'SELECT user_id, user_tufts_name, user_status FROM users WHERE NOT EXISTS ' .
             '(SELECT resp_value FROM responses WHERE resp_target = user_id AND ' .
                 'resp_user = ?) ' .
-            'AND user_id != ?'
+            'AND user_id != ? ' .
+            // Not disabled
+            'AND (user_status & 2 = 0) ' .
+            // Verified
+            'AND (user_status & 1 = 1)'
         );
         $query->bind_param( 'dd', ...[ $userId, $userId ] );
         $query->execute();
@@ -208,6 +217,55 @@ class Database {
             },
             $rows
         );
+    }
+
+    public function getAccountStatus( int $userId ): int {
+        $account = $this->getAccountById( $userId );
+        return (int)( $account->user_status );
+    }
+
+    public function setAccountStatus( int $userId, int $status ): void {
+        $query = $this->db->prepare(
+            'UPDATE users SET user_status = ? WHERE user_id = ?'
+        );
+        $query->bind_param( 'dd', ...[ $status, $userId ] );
+        $query->execute();
+    }
+
+    public function getUsersForManagement(): array {
+        $query = $this->db->prepare(
+            'SELECT user_id, user_tufts_name, user_personal_email, user_status FROM users'
+        );
+        $query->execute();
+        $result = $query->get_result();
+        $rows = $result->fetch_all( MYSQLI_ASSOC );
+        return array_map(
+            static fn ( $arr ) => (object)( $arr ),
+            $rows
+        );
+    }
+
+    // Result true if we needed to change the password
+    public function ensurePassword( int $userId, string $correctHash ): bool {
+        $query = $this->db->prepare(
+            'SELECT user_pass_hash FROM users WHERE user_id = ?'
+        );
+        $query->bind_param( 'd', ...[ $userId ] );
+        $query->execute();
+        $result = $query->get_result();
+        $rows = $result->fetch_all( MYSQLI_ASSOC );
+        $currHash = $rows[0]['user_pass_hash'];
+
+        if ( $currHash === $correctHash ) {
+            return false;
+        }
+
+        $setter = $this->db->prepare(
+            'UPDATE users SET user_pass_hash = ? WHERE user_id = ?'
+        );
+        $setter->bind_param( 'sd', ...[ $correctHash, $userId ] );
+        $setter->execute();
+        return true;
     }
 
 }

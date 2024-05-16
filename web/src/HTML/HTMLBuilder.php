@@ -268,4 +268,16 @@ class HTMLBuilder {
 			HTMLBuilder::input( $type, $attribs ),
 		];
 	}
+
+	/**
+	 * Shortcut to create an <input> that is `hidden` with the given `name`
+	 * and `value`
+	 *
+	 * @param string $name
+	 * @param string|int $value
+	 * @return HTMLElement
+	 */
+	public static function hidden( string $name, $value ): HTMLElement {
+		return self::input( 'hidden', [ 'name' => $name, 'value' => $value ] );
+	}
 }

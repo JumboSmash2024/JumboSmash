@@ -56,6 +56,7 @@ define( 'JUMBO_SMASH_DB_NAME', 'jumbo_smash_db' );
 // Individual classes have extra setup
 $extraSetup = [
     \JumboSmash\Services\Database::class,
+    \JumboSmash\Services\Management::class, // uses the database
 ];
 foreach ( $extraSetup as $setup ) {
     $setup::doSetup();

@@ -30,8 +30,9 @@ class HistoryPage extends BasePage {
     }
 
     private function getMainDisplay(): array {
-        if ( !AuthManager::isLoggedIn() ) {
-            return [ $this->mustLogInError() ];
+        $authError = $this->getAuthError();
+        if ( $authError ) {
+            return [ $authError ];
         }
         return $this->getPriorResponses();
     }
@@ -80,14 +81,6 @@ class HistoryPage extends BasePage {
             [ 'id' => 'js-history-response-table' ]
         );
         return [ $table ];
-    }
-
-    private function mustLogInError(): HTMLElement {
-        return HTMLBuilder::element(
-            'div',
-            'ERROR: Must be logged in!',
-            [ 'class' => 'js-error' ]
-        );
     }
 
     private function getRowForJumbo( string $jumboDisplay, int $userId ): HTMLElement {

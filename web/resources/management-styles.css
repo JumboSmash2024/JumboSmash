@@ -1,0 +1,8 @@
+#js-management-table,
+#js-management-table tr,
+#js-management-table th,
+#js-management-table td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 5px;
+}

@@ -30,8 +30,9 @@ class MatchesPage extends BasePage {
     }
 
     private function getMainDisplay(): array {
-        if ( !AuthManager::isLoggedIn() ) {
-            return [ $this->mustLogInError() ];
+        $authError = $this->getAuthError();
+        if ( $authError ) {
+            return [ $authError ];
         }
         return $this->getMatches();
     }
@@ -96,14 +97,6 @@ class MatchesPage extends BasePage {
         }
 
         return $output;
-    }
-
-    private function mustLogInError(): HTMLElement {
-        return HTMLBuilder::element(
-            'div',
-            'ERROR: Must be logged in!',
-            [ 'class' => 'js-error' ]
-        );
     }
 
 }
