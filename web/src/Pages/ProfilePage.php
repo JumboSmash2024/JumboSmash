@@ -137,11 +137,18 @@ class ProfilePage extends BasePage {
                 'p',
                 $who . ' not created a profile yet :('
             );
+            if ( $isMyProfile ) {
+                $elems[] = HTMLBuilder::element(
+                    'p',
+                    'Please create one (and consider adding a URL with images'
+                );
+            }
         } else {
-            $elems[] = HTMLBuilder::element(
-                'p',
-                'Profile text:'
-            );
+            $profIntro = 'Profile text:';
+            if ( $isMyProfile ) {
+                $profIntro = 'Profile text (consider adding a URL with images)';
+            }
+            $elems[] = HTMLBuilder::element( 'p', $profIntro );
             $elems[] = HTMLBuilder::element(
                 'pre',
                 $profileText,
