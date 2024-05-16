@@ -7,15 +7,15 @@ use JumboSmash\Services\AuthManager;
 use JumboSmash\Services\Database;
 use JumboSmash\Services\Logger;
 
-class ResponsePage extends BasePage {
+class ConnectPage extends BasePage {
 
     private const RESPONSE_SKIP = 'Skip';
     private const RESPONSE_SMASH = 'Smash';
     private const RESPONSE_PASS = 'Pass';
 
     public function __construct() {
-        parent::__construct( 'Response' );
-        $this->addStyleSheet( 'response-styles.css' );
+        parent::__construct( 'Connect' );
+        $this->addStyleSheet( 'connect-styles.css' );
     }
 
     protected function getBodyElements(): array {
@@ -23,7 +23,7 @@ class ResponsePage extends BasePage {
             HTMLBuilder::element(
                 'div',
                 [
-                    HTMLBuilder::element( 'h1', 'Your responses' ),
+                    HTMLBuilder::element( 'h1', 'Your connections' ),
                     ...$this->getMainDisplay(),
                 ],
                 [ 'class' => 'center-table' ]
@@ -152,7 +152,7 @@ class ResponsePage extends BasePage {
             $fields,
             [
                 'id' => 'js-submit-response',
-                'action' => './response.php',
+                'action' => './connect.php',
                 'method' => 'POST',
             ]
         );

@@ -130,14 +130,14 @@ abstract class BasePage {
             [ 'id' => 'js-nav-manage-wrapper' ]
         );
         $elems['help'] = $helpPageLink;
-        $elems['respond'] = HTMLBuilder::element(
+        $elems['connect'] = HTMLBuilder::element(
             'div',
             HTMLBuilder::link(
-                './response.php',
-                'Respond',
-                [ 'id' => 'js-nav-respond' ]
+                './connect.php',
+                'Connect',
+                [ 'id' => 'js-nav-connect' ]
             ),
-            [ 'id' => 'js-nav-respond-wrapper' ]
+            [ 'id' => 'js-nav-connect-wrapper' ]
         );
         $elems['history'] = HTMLBuilder::element(
             'div',

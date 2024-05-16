@@ -111,42 +111,4 @@ class HistoryPage extends BasePage {
         );
     }
 
-    private function getForm(): HTMLElement {
-        $fields = $this->getFormFields();
-        if ( !$fields ) {
-            return HTMLBuilder::element(
-                'div',
-                'No new Jumbos to respond to'
-            );
-        };
-        return HTMLBuilder::element(
-            'form',
-            $fields,
-            [
-                'id' => 'js-submit-response',
-                'action' => './response.php',
-                'method' => 'POST',
-            ]
-        );
-    }
-
-    private function getFormFields(): array {
-        $db = new Database;
-        $unresponded = $db->getUnresponded( AuthManager::getLoggedInUserId() );
-
-        if ( !$unresponded ) {
-            return [];
-        }
-
-        $fields = array_map(
-            fn ( $row ) => $this->getRowForJumbo( $row->user_tufts_name, (int)$row->user_id ),
-            $unresponded
-        );
-        $fields[] = HTMLBuilder::element(
-            'button',
-            'Submit',
-            [ 'type' => 'submit', 'id' => 'js-responses-submit', 'class' => 'js-form-button' ]
-        );
-        return $fields;
-    }
 }

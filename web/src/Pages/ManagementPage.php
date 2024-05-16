@@ -179,25 +179,6 @@ class ManagementPage extends BasePage {
         return HTMLBuilder::element( 'td', $form );
     }
 
-    private function getForm(): HTMLElement {
-        $fields = $this->getFormFields();
-        if ( !$fields ) {
-            return HTMLBuilder::element(
-                'div',
-                'No new Jumbos to respond to :('
-            );
-        };
-        return HTMLBuilder::element(
-            'form',
-            $fields,
-            [
-                'id' => 'js-submit-response',
-                'action' => './response.php',
-                'method' => 'POST',
-            ]
-        );
-    }
-
     private function getManagerTable(): HTMLElement {
         $db = new Database;
         $allUsers = $db->getUsersForManagement();
