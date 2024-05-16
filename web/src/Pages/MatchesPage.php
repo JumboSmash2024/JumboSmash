@@ -58,7 +58,13 @@ class MatchesPage extends BasePage {
             if ( $row->user_personal_email ) {
                 $yesMatch[] = HTMLBuilder::element(
                     'li',
-                    $row->user_tufts_name . ' (' . $row->user_personal_email . ')'
+                    [
+                        HTMLBuilder::link(
+                            '/profile.php?user-id=' . $row->user_id,
+                            $row->user_tufts_name
+                        ),
+                        ' (' . $row->user_personal_email . ')',
+                    ]
                 );
             } else {
                 $noMatch[] = HTMLBuilder::element(

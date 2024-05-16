@@ -218,7 +218,7 @@ class Database {
     public function getMatchInfo( int $userId ): array {
         $query = $this->db->prepare(
             'SELECT my_response.resp_target, their_response.resp_value, ' .
-            'user_tufts_name, user_personal_email ' .
+            'user_id, user_tufts_name, user_personal_email ' .
             'FROM responses my_response LEFT JOIN responses their_response ON ' .
             'my_response.resp_target = their_response.resp_user AND ' .
             'my_response.resp_user = their_response.resp_target ' .
@@ -291,10 +291,10 @@ class Database {
         return true;
     }
 
-    private function getProfileTextRaw( int $userId ): ?string {
+    private function getProfileRaw( int $userId ): ?stdClass {
         // Doesn't care about unverified/disabled accounts
         $query = $this->db->prepare(
-            'SELECT profile_text FROM profiles WHERE profile_user = ?'
+            'SELECT * FROM profiles WHERE profile_user = ?'
         );
         $query->bind_param( 'd', ...[ $userId ] );
         $query->execute();
@@ -303,10 +303,10 @@ class Database {
         if ( count( $rows ) === 0 ) {
             return null;
         }
-        return $rows[0]['profile_text'];   
+        return (object)$rows[0];
     }
 
-    public function getProfileText( int $userId ): ?string {
+    public function getProfile( int $userId ): ?stdClass {
         $userStatus = $this->getAccountStatus( $userId );
         // Text is ignored for disabled/unverified accounts
         if ( Management::hasFlag( $userStatus, Management::FLAG_DISABLED ) ) {
@@ -315,11 +315,11 @@ class Database {
         if ( !Management::hasFlag( $userStatus, Management::FLAG_VERIFIED ) ) {
             return null;
         }
-        return $this->getProfileTextRaw( $userId );
+        return $this->getProfileRaw( $userId );
     }
 
     public function setProfileText( int $userId, string $profile ): void {
-        if ( $this->getProfileTextRaw( $userId ) === null ) {
+        if ( $this->getProfileRaw( $userId ) === null ) {
             // No current profile
             $query = $this->db->prepare(
                 'INSERT INTO profiles (profile_user, profile_text) VALUES (?, ?)'
@@ -336,6 +336,29 @@ class Database {
             $query->bind_param(
                 'sd',
                 ...[ $profile, $userId ]
+            );
+        }
+        $query->execute();  
+    }
+
+    public function setProfileLink( int $userId, string $link ): void {
+        if ( $this->getProfileRaw( $userId ) === null ) {
+            // No current link
+            $query = $this->db->prepare(
+                'INSERT INTO profiles (profile_user, profile_link) VALUES (?, ?)'
+            );
+            $query->bind_param(
+                'ds',
+                ...[ $userId, $link ]
+            );
+        } else {
+            // Have current text
+            $query = $this->db->prepare(
+                'UPDATE profiles SET profile_link = ? WHERE profile_user = ?'
+            );
+            $query->bind_param(
+                'sd',
+                ...[ $link, $userId ]
             );
         }
         $query->execute();  

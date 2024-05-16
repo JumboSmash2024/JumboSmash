@@ -14,7 +14,8 @@ class ProfilePage extends BasePage {
     private Database $db;
     private Logger $logger;
 
-    private const MAX_LENGTH = 500;
+    private const MAX_LENGTH_LINK = 150;
+    private const MAX_LENGTH_TEXT = 500;
 
     public function __construct() {
         parent::__construct( 'Profile' );
@@ -67,21 +68,57 @@ class ProfilePage extends BasePage {
             );
         }
 
-        $profileText = $_POST['new-profile'];
-        if ( strlen( $profileText ) > self::MAX_LENGTH ) {
+        $profileText = $_POST['new-profile-text'];
+        $profileLink = $_POST['new-profile-link'];
+        if ( strlen( $profileText ) > self::MAX_LENGTH_TEXT ) {
             $len = strlen( $profileText );
-            $maxLen = self::MAX_LENGTH;
+            $maxLen = self::MAX_LENGTH_TEXT;
             return HTMLBuilder::element(
                 'p',
                 "Profile too long; $len is more than maximum of $maxLen characters"
             );
         }
-        $this->db->setProfileText( $currUser, $profileText );
-        $this->logger->info(
-            'User #{id} updated profile text, now: ```{text}```',
-            [ 'id' => $currUser, 'text' => $profileText ]
+        if ( strlen( $profileLink ) > self::MAX_LENGTH_LINK ) {
+            $len = strlen( $profileLink );
+            $maxLen = self::MAX_LENGTH_LINK;
+            return HTMLBuilder::element(
+                'p',
+                "Link too long; $len is more than maximum of $maxLen characters"
+            );
+        }
+
+        $currProfile = $this->db->getProfile( $currUser );
+        $currProfileText = $currProfile ? $currProfile->profile_text : null;
+        $currProfileText ??= '';
+        $currProfileLink = $currProfile ? $currProfile->profile_link : null;
+        $currProfileLink ??= '';
+
+        $changed = false;
+        if ( $currProfileText !== $profileText ) {
+            $this->db->setProfileText( $currUser, $profileText );
+            $this->logger->info(
+                'User #{id} updated profile text, now: ```{text}```',
+                [ 'id' => $currUser, 'text' => $profileText ]
+            );
+            $changed = true;
+        }
+        if ( $currProfileLink !== $profileLink ) {
+            $this->db->setProfileLink( $currUser, $profileLink );
+            $this->logger->info(
+                'User #{id} updated profile link, now: `{link}`',
+                [ 'id' => $currUser, 'link' => $profileLink ]
+            );
+            $changed = true;
+        }
+
+        $msg = $changed ? 'Profile updated!' : 'No changes made';
+        return HTMLBuilder::element(
+            'div',
+            [
+                HTMLBuilder::element( 'p', $msg ),
+                HTMLBuilder::element( 'br' ),
+            ]
         );
-        return HTMLBuilder::element( 'p', 'Profile updated!' );
     }
 
     private function getForm(): array {
@@ -122,20 +159,43 @@ class ProfilePage extends BasePage {
             ];
         }
 
-        $profileText = $this->db->getProfileText( $targetUser );
+        $profile = $this->db->getProfile( $targetUser );
+        $profileText = $profile ? $profile->profile_text : null;
+        $profileLink = $profile ? $profile->profile_link : null;
 
         $elems = [];
 
-        $who = ( $isMyProfile ? 'Your' : 'This user\'s' );
+        $whoseIs = ( $isMyProfile ? 'Your' : 'This user\'s' );
+        $whoHas = ( $isMyProfile ? 'You have' : 'This user has' );
+
         $elems[] = HTMLBuilder::element(
             'p',
-            $who . ' Tufts name is: ' . $targetUserRow->user_tufts_name
+            $whoseIs . ' Tufts name is: ' . $targetUserRow->user_tufts_name
         );
-        if ( $profileText === null ) {
-            $who = ( $isMyProfile ? 'You have' : 'This user has' );
+
+        if ( $profileLink ) {
             $elems[] = HTMLBuilder::element(
                 'p',
-                $who . ' not created a profile yet :('
+                [
+                    'User-configured link: ',
+                    HTMLBuilder::link(
+                        $profileLink,
+                        $profileLink,
+                        [ 'target' => '_blank' ]
+                    ),
+                ]
+            );
+        } else {
+            $elems[] = HTMLBuilder::element(
+                'p',
+                $whoHas . ' not added a profile link yet'
+            );
+        }
+
+        if ( !$profileText ) {
+            $elems[] = HTMLBuilder::element(
+                'p',
+                $whoHas . ' not created a profile yet :('
             );
             if ( $isMyProfile ) {
                 $elems[] = HTMLBuilder::element(
@@ -176,10 +236,25 @@ class ProfilePage extends BasePage {
     
     private function getEditForm(): array {
         $currUser = AuthManager::getLoggedInUserId();
-        $profileText = $this->db->getProfileText( $currUser );
+        
+        $profile = $this->db->getProfile( $currUser );
+        $profileText = $profile ? $profile->profile_text : '';
         $profileText ??= '';
+        $profileLink = $profile ? $profile->profile_link : '';
+        $profileLink ??= '';
 
         $currentElems = [];
+        if ( $profileLink ) {
+            $currentDiv = HTMLBuilder::element(
+                'div',
+                [
+                    HTMLBuilder::element( 'span', 'Current link:' ),
+                    HTMLBuilder::element( 'br' ),
+                    HTMLBuilder::link( $profileLink, $profileLink ),
+                ]
+            );
+            $currentElems[] = $currentDiv;
+        }
         if ( $profileText ) {
             $currentDiv = HTMLBuilder::element(
                 'div',
@@ -196,29 +271,41 @@ class ProfilePage extends BasePage {
             $currentElems[] = $currentDiv;
         }
 
-        $maxLen = self::MAX_LENGTH;
+        $maxLenText = self::MAX_LENGTH_TEXT;
+        $maxLenLink = self::MAX_LENGTH_LINK;
         $form = HTMLBuilder::element(
 			'form',
 			[
                 ...$currentElems,
 				HTMLBuilder::element( 'br' ),
-				HTMLBuilder::element( 'span', "New profile (max length: $maxLen characters):" ),
-				HTMLBuilder::hidden( 'action', 'edit' ),
-				HTMLBuilder::hidden( 'target-user', $currUser ),
+				HTMLBuilder::element( 'span', "Link editor (max length: $maxLenLink characters):" ),
+				HTMLBuilder::element(
+					'textarea',
+					$profileLink,
+					[
+                        'name' => 'new-profile-link',
+                        'id' => 'new-profile-link',
+                        'maxlength' => self::MAX_LENGTH_LINK,
+                    ]
+				),
+                HTMLBuilder::element( 'br' ),
+				HTMLBuilder::element( 'span', "Profile editor (max length: $maxLenText characters):" ),
 				HTMLBuilder::element(
 					'textarea',
 					$profileText,
 					[
-                        'name' => 'new-profile',
-                        'id' => 'new-profile',
-                        'maxlength' => self::MAX_LENGTH
+                        'name' => 'new-profile-text',
+                        'id' => 'new-profile-text',
+                        'maxlength' => self::MAX_LENGTH_TEXT
                     ]
 				),
 				HTMLBuilder::element(
 					'button',
 					'Submit',
 					[ 'type' => 'submit' ]
-				)
+                ),
+				HTMLBuilder::hidden( 'action', 'edit' ),
+				HTMLBuilder::hidden( 'target-user', $currUser ),
 			],
 			[ 'method' => 'POST' ]
 		);

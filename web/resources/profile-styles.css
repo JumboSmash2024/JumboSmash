@@ -1,11 +1,18 @@
 textarea {
     resize: vertical;
-    min-height: 200px;
     width: 100%;
     box-sizing: border-box;
     padding: 15px;
     border-radius: 5px;
     margin-top: 15px;
+}
+
+#new-profile-text {
+    min-height: 200px;
+}
+
+#new-profile-link {
+    min-height: 50px;
 }
 
 .js-profile-text {
