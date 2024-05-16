@@ -27,6 +27,16 @@ class LandingPage extends BasePage {
                 'p',
                 'Its JumboSmash! See the links above for navigation.'
             ),
+            HTMLBuilder::element(
+                'p',
+                [
+                    'Please follow the steps listed on ',
+                    HTMLBuilder::link( './help.php', 'the help page' ),
+                    ' for getting your account verified, and then set up ' .
+                        'your profile at ',
+                    HTMLBuilder::link( './profile.php', 'profile.php' )
+                ]
+            ),
         ];
     }
 }
