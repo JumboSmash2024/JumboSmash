@@ -42,10 +42,6 @@ input[type="password"] {
     color: #000;
     transition: color 0.3s;
 }
-#js-login-signup {
-    display: block;
-    text-decoration: none;
-}
 .js-form-redirect {
     position: relative;
     width: 50%;
