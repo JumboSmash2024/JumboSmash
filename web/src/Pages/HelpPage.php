@@ -57,6 +57,26 @@ END
             )
         );
         $elems[] = $reminderList;
+
+        $email = HTMLBuilder::element( 'code', 'jumbosmash2024@gmail.com' );
+        $regSteps = [
+            [ 'Send an email to ', $email, ' from your TUFTS email and CC the personal email' ],
+            [ 'REPLY ALL from your personal email to confirm' ],
+            [ 'Wait for management to verify your account' ],
+        ];
+        $registration = HTMLBuilder::element(
+            'ol',
+            array_map(
+                static fn ( $step ) => HTMLBuilder::element( 'li', $step ),
+                $regSteps
+            )
+        );
+        $elems[] = HTMLBuilder::element( 'hr' );
+        $elems[] = HTMLBuilder::element(
+            'p',
+            'To register your account, do the following:'
+        );
+        $elems[] = $registration;
         return $elems;
     }
 }
