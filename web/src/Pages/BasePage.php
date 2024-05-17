@@ -90,7 +90,7 @@ abstract class BasePage {
         $helpPageLink = HTMLBuilder::element(
             'div',
             HTMLBuilder::link(
-                './help.php',
+                './',
                 'Help',
                 [ 'id' => 'js-nav-help' ]
             ),
