@@ -247,7 +247,7 @@ class Database {
         $objects = array_map(
             static function ( $arr ) {
                 $row = (object)( $arr );
-                if ( $row->resp_value === NULL ) {
+                if ( $row->resp_value === NULL || $row->resp_value === self::VALUE_RESPONSE_PASS ) {
                     // redact if no match
                     $row->user_personal_email = '';
                 }
