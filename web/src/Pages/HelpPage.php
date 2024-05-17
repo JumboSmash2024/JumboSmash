@@ -31,6 +31,7 @@ END
         ];
         $email = HTMLBuilder::element( 'code', 'jumbosmash2024@gmail.com' );
         $regSteps = [
+            [ 'Create an account at ', HTMLBuilder::link( './signup.php', 'signup.php' ) ],
             [ 'Send an email to ', $email, ' from your TUFTS email and CC the personal email' ],
             [ 'REPLY ALL from your personal email to confirm' ],
             [ 'Wait for management to verify your account' ],
