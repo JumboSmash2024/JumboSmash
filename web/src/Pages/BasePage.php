@@ -193,6 +193,13 @@ abstract class BasePage {
                 [ 'class' => 'js-error' ]
             );
         }
+        if ( AuthManager::isDisabled() ) {
+            return HTMLBuilder::element(
+                'div',
+                'ERROR: Your account has been disabled!',
+                [ 'class' => 'js-error' ]
+            );
+        }
         return null;
     }
 

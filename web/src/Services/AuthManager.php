@@ -46,6 +46,15 @@ class AuthManager {
         return ( ( $flags & Management::FLAG_VERIFIED ) === Management::FLAG_VERIFIED );
     }
 
+    public static function isDisabled(): bool {
+        if ( !self::isLoggedIn() ) {
+            return false;
+        }
+        $db = new Database();
+        $flags = $db->getAccountStatus( self::getLoggedInUserId() );
+        return ( ( $flags & Management::FLAG_DISABLED ) === Management::FLAG_DISABLED );
+    }
+
     public static function logOut(): void {
         // For future uses within the current
         unset( $_SESSION[self::SESSION_KEY] );
