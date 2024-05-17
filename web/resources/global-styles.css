@@ -8,6 +8,7 @@ html {
 }
 body {
     padding-bottom: 50px;
+    font-family: Verdana, sans-serif;
 }
 body, button, textarea {
     /* Increase default font size */
@@ -38,11 +39,18 @@ pre {
     display: inline-block;
 }
 #js-top-nav a {
-    border: 3px solid red;
+    border: 1.5px solid #512C1D;
     border-radius: 15%;
     padding: 10px;
+    text-decoration: none;
+    font-family: Verdana, sans-serif;
+    background-color: #3E8EDE;
 }
-
+#js-top-nav a:hover {
+    background-color:#ffffff;
+    color:#3E8EDE;
+    border: 1.5px solid #EE96CB;
+}
 h1 {
     /* Center headings */
     text-align: center;
