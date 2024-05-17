@@ -18,6 +18,7 @@ class Management {
     // Value for manager = manager + verified
     private const MANAGER_STATUS_VALUE = self::FLAG_VERIFIED | self::FLAG_MANAGER;
 
+    public const MANAGER_TUFTS_NAME = '~jumbo~smash~management~';
     public const MANAGER_EMAIL = 'jumbosmash2024@gmail.com';
 
     private Database $db;
@@ -41,7 +42,7 @@ class Management {
             return (int)( $res->user_id );
         }
         $created = $this->db->createAccount(
-            '~JUMBO~SMASH~MANAGEMENT~',
+            self::MANAGER_TUFTS_NAME,
             self::MANAGER_EMAIL,
             PasswordManager::hashForStorage(
                 ConfigurationManager::getSecret( 'manager-pass' )

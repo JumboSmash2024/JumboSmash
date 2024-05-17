@@ -33,6 +33,17 @@ class Database {
         $this->db->close();
     }
 
+    private function compareUserRows( stdClass $a, stdClass $b ): int {
+        // management user always comes first
+        if ( $a->user_tufts_name === Management::MANAGER_TUFTS_NAME ) {
+            return -1;
+        }
+        if ( $b->user_tufts_name === Management::MANAGER_TUFTS_NAME ) {
+            return 1;
+        }
+        return $a->user_tufts_name <=> $b->user_tufts_name;
+    }
+
     private function ensureTable( string $tableName, string $patchFile ) {
         $result = $this->db->query( "SHOW TABLES LIKE '$tableName';" );
         if ( $result->num_rows !== 0 ) {
@@ -161,10 +172,12 @@ class Database {
         $query->execute();
         $result = $query->get_result();
         $rows = $result->fetch_all( MYSQLI_ASSOC );
-        return array_map(
+        $objects = array_map(
             static fn ( $arr ) => (object)( $arr ),
             $rows
-        );
+        );        
+        usort( $objects, [ $this, 'compareUserRows' ] );
+        return $objects;
     }
 
     public function recordResponse(
@@ -209,10 +222,12 @@ class Database {
         $query->execute();
         $result = $query->get_result();
         $rows = $result->fetch_all( MYSQLI_ASSOC );
-        return array_map(
+        $objects = array_map(
             static fn ( $arr ) => (object)( $arr ),
             $rows
         );
+        usort( $objects, [ $this, 'compareUserRows' ] );
+        return $objects;
     }
 
     public function getMatchInfo( int $userId ): array {
@@ -229,7 +244,7 @@ class Database {
         $query->execute();
         $result = $query->get_result();
         $rows = $result->fetch_all( MYSQLI_ASSOC );
-        return array_map(
+        $objects = array_map(
             static function ( $arr ) {
                 $row = (object)( $arr );
                 if ( $row->resp_value === NULL ) {
@@ -240,6 +255,8 @@ class Database {
             },
             $rows
         );
+        usort( $objects, [ $this, 'compareUserRows' ] );
+        return $objects;
     }
 
     public function getAccountStatus( int $userId ): int {
