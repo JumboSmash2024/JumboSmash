@@ -13,7 +13,7 @@ class ConnectPage extends BasePage {
     private const RESPONSE_SMASH = 'Smash';
     private const RESPONSE_PASS = 'Pass';
 
-    private const ACCEPTING_RESPONSES = false;
+    private const ACCEPTING_RESPONSES = true;
 
     public function __construct() {
         parent::__construct( 'Connect' );
