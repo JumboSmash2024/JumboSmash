@@ -238,9 +238,9 @@ class Database {
             'my_response.resp_target = their_response.resp_user AND ' .
             'my_response.resp_user = their_response.resp_target ' .
             'LEFT JOIN users ON my_response.resp_target = user_id ' .
-            'WHERE my_response.resp_user = ?'
+            'WHERE my_response.resp_user = ? AND my_response.resp_value = ?'
         );
-        $query->bind_param( 'd', ...[ $userId ] );
+        $query->bind_param( 'dd', ...[ $userId, self::VALUE_RESPONSE_SMASH ] );
         $query->execute();
         $result = $query->get_result();
         $rows = $result->fetch_all( MYSQLI_ASSOC );
