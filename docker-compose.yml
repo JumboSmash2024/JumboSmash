@@ -16,5 +16,6 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./web/:/var/www/html/:cached
+      - ./log-3.txt:/var/www/log-3.txt
     ports:
       - "80:80"
