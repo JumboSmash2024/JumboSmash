@@ -13,7 +13,7 @@ class ConfigurationManager {
 	 * Config values (not secret); key is the setting name, value is what to you
 	 */
 	private const KNOWN_SETTINGS = [
-		'logger-dest' => '/var/www/log-3.txt',
+		'logger-dest' => '/var/www/log-4.txt',
 	];
 
 	public static function getConfig( string $settingName ) {
